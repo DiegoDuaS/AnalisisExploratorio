@@ -11,29 +11,6 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import statsmodels.stats.diagnostic as diag
 import statsmodels.api as sm
-from tabulate import tabulate
-import preguntas
-
-#Configuracion para mostrar todas las filas y columnas
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-
-#Importar Datos
-movies=pd.read_csv("movies.csv", encoding="ISO-8859-1")
-
-#Resumen del Conjunto de Datos
-print(movies.describe())
-
-#Informacion sobre los tipos de Datos
-print(movies.info())
-
-cuantitiativos = movies.select_dtypes(include=['int64', 'float64']).columns.tolist()
-cuantitiativos.remove("id")
-
-cualitativos = movies.select_dtypes(include=['object']).columns.tolist()
-cualitativos.remove("castWomenAmount")
-cualitativos.remove("castMenAmount")
-cualitativos.remove("actorsPopularity")
 
 def prueba_de_normalidad(column, column_name):
     ks_statistic, p_value = stats.kstest(column, 'norm', args=(np.mean(column), np.std(column)))
@@ -44,9 +21,9 @@ def prueba_de_normalidad(column, column_name):
 
     alpha = 0.05
     if p_value < alpha:
-        print(f"Se rechaza la hipótesis nula: los datos de '{column_name}' NO provienen de una distribución normal.")
+        print(f"Se rechaza la hipótesis nula: los datos de '{column_name}' NO provienen de una distribución normal." + "\n")
     else:
-        print(f"No se rechaza la hipótesis nula: los datos de '{column_name}' parecen provenir de una distribución normal.")
+        print(f"No se rechaza la hipótesis nula: los datos de '{column_name}' parecen provenir de una distribución normal." + "\n")
         
 def frecuencias(column):
     frecuencia = column.value_counts()
@@ -54,12 +31,3 @@ def frecuencias(column):
     tabla_frecuencia = pd.DataFrame({'Frecuencia': frecuencia, 'Porcentaje': porcentaje})
     print(tabla_frecuencia)
         
-for col in cuantitiativos:
-    print(col)
-    prueba_de_normalidad(movies[col],col)
-
-for col in cuantitiativos:
-    print(col)
-    frecuencias(movies[col])
-
-preguntas.top_10_movies(movies)
