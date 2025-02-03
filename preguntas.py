@@ -231,7 +231,64 @@ def month_releases(df):
     plt.show()
 
 # --------- Inciso N ---------- #
-
+def rating_revenue(df):
+    df = df[['voteAvg','revenue']]
+    scat = plt.figure(figsize=(8, 5))
+    ax = scat.add_subplot(1,1,1)
+    ax.scatter(df['voteAvg'], df['revenue'])
+    ax.set_xlabel("Califcación")
+    ax.set_ylabel("Ingresos")
+    ax.set_title("Calificaciones VS Ingresos")
+    plt.tight_layout()
+    plt.show()
+    
 # --------- Inciso O ---------- #
+def video_and_page(df):
+    df = df[['video','homePage','revenue']]
+    df = df[df['revenue']!=0]
+    with_homepage = df[['homePage','revenue']]
+    with_homepage = with_homepage[with_homepage['homePage'].notna()]
+    with_homepage['rev_log'] = np.log10(with_homepage['revenue'])
+    wh_count = with_homepage['rev_log'].value_counts().sort_index()
 
+    with_video = df[['video','revenue']]
+    with_video = with_video[with_video['video'].notna()]
+    with_video = with_video[with_video['video']!=False]
+    print(with_video)
+    scat = plt.figure(figsize=(8, 5))
+    ax = scat.add_subplot(1,1,1)
+    ax.hist(wh_count)
+    ax.set_xlabel("Log de Ingresos")
+    ax.set_ylabel("Frecuencia")
+    ax.set_title("Histograma Log de Ingresos")
+    plt.tight_layout()
+    plt.show()
+
+
+    plt.tight_layout()
+    plt.show()
+    
 # --------- Inciso P ---------- #
+
+def actor_popularity(df):
+    df = df[['actorsPopularity','revenue']]
+    df = df[df['revenue']!=0]
+    df['ap_mean'] = df['actorsPopularity'].astype(str).apply(lambda x: sum(map(float, x.split('|'))) / len(x.split('|')))
+    df['ap_max'] = df['actorsPopularity'].astype(str).apply(lambda x: max(map(float, x.split('|'))))
+
+
+    fig, ax= plt.subplots(nrows=1, ncols=2,figsize=(12, 5))
+
+    ax[0].scatter(df['ap_max'], df['revenue'])
+    ax[0].set_xlabel("Popularidad Máxima del elenco")
+    ax[0].set_ylabel("Ingresos")
+    ax[0].set_title("Popularidad Máxima VS Ingresos")
+
+
+    ax[1].scatter(df['ap_mean'], df['revenue'])
+    ax[1].set_xlabel("Promedio de Popularidad del elenco")
+    ax[1].set_ylabel("Ingresos")
+    ax[1].set_title("Promedio de Popularidad VS Ingresos")
+
+    plt.tight_layout()
+    plt.show()
