@@ -7,26 +7,31 @@ import statsmodels.stats.diagnostic as diag
 import statsmodels.api as sm
 from tabulate import tabulate
 
+# --------- Inciso A ---------- #
 def top_10_budget_movies(df):
     #Ordenar los datos de mayor a menor por presupuesto, enseñar solo los primeros 10
     top_10_budget = df.sort_values(by='budget', ascending=False).head(10)
     print(top_10_budget[['title', 'budget']])
-    
+
+# --------- Inciso B ---------- #
 def top_10_revenue_movies(df):
       #Ordenar los datos de mayor a menor por ingresos, enseñar solo los primeros 10
     top_10_revenue = df.sort_values(by='revenue', ascending=False).head(10)
     print(top_10_revenue[['title', 'revenue']])
-    
+
+# --------- Inciso C ---------- #
 def top_votes(df):
       #Ordenar los datos de mayor a menor por cantidad de votos, enseñar solo el primero
     top_votes = df.sort_values(by='voteCount', ascending=False).head(1)
     print(top_votes[['title', 'voteCount']])
 
+# --------- Inciso D ---------- #
 def worst_movie(df):
       #Ordenar los datos de menor a mayor por promedio en votos, enseñar solo el primero
     worst_movie = df.sort_values(by='voteAvg', ascending=True).head(1)
     print(worst_movie[['title', 'voteAvg']])
-    
+
+# --------- Inciso E ---------- #
 def movies_per_year(df):
     #Convertir a formato date_time para poder extraer el año 
     df['releaseDate'] = pd.to_datetime(df['releaseDate'], errors='coerce')
@@ -46,7 +51,7 @@ def movies_per_year(df):
     #Generar el gráfico
     plt.figure(figsize=(15, 6))
 
-    movies_per_year.plot(kind='bar', color='skyblue', edgecolor='black')
+    movies_per_year.plot(kind='bar', color='skyblue')
     plt.xlabel("Año")
     plt.ylabel("Cantidad de películas")
     plt.title("Número de películas producidas por año")
