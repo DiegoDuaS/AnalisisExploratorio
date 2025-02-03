@@ -137,3 +137,101 @@ def gender_proportion(df):
     ax[1].set_title("Proporción de Mujeres VS Popularidad")
     plt.tight_layout()
     plt.show()
+    
+# --------- Inciso J ---------- #
+def best_directors(df):
+    df = df[['director','voteAvg']]
+    df = df.sort_values(by='voteAvg', ascending=False).head(20)
+    directors = df['director'].str.split('|').explode().drop_duplicates()
+    print(directors)
+    
+# --------- Inciso K ---------- #
+def revenue_budget(df):
+    df = df[['revenue','budget']]
+    df = df[df['revenue']!=0]
+    df = df[df['budget']!=0]
+    df['rb_proportion'] = df['revenue']/df['budget']
+    df['rbp_log'] = np.log10(df['rb_proportion'])
+    fig, ax= plt.subplots(nrows=1, ncols=2,figsize=(12, 5))
+
+    ax[0].scatter(df['budget'], df['revenue'])
+    ax[0].set_xlabel("Presupuesto")
+    ax[0].set_ylabel("Ingresos")
+    ax[0].set_title("Presupuesto VS Ingresos")
+
+    ax[1].hist(df['rbp_log'],bins=30)
+    ax[1].set_xlabel("Log de Proporción entre Ingresos/Presupuesto")
+    ax[1].set_ylabel("Frecuencia de log de proporción")
+    ax[1].set_title("Ingresos/Presupuesto")
+    plt.tight_layout()
+    plt.show()
+
+# --------- Inciso L---------- #
+def months_revenue(df):
+    dfl = df[['releaseDate','revenue']]
+    dfl = dfl[dfl['revenue']!=0]
+    dfl = dfl[dfl['revenue']<2.5e+8]
+    dfl['releaseMonth'] = pd.to_datetime(dfl['releaseDate'], errors='coerce').dt.month
+
+    group = dfl.groupby('releaseMonth')['revenue']
+
+    month_order = list(range(1, 13))
+
+    means = group.mean().reindex(month_order)
+    q1 = group.quantile(0.25).reindex(month_order)
+    q3 = group.quantile(0.75).reindex(month_order)
+    medians = group.median().reindex(month_order)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    x = np.arange(len(month_order))  
+
+    for i,month in enumerate(month_order):
+        ax.bar(month, q3[month] - q1[month], bottom=q1[month], color='lightblue', label='Cuartiles 2 - 3' if i == 0 else "")
+        ax.bar(month, means[month] - q3[month], bottom=q3[month], color='dodgerblue', label='Promedio' if i == 0 else "")
+        ax.bar(month, q1[month], color='lightgray',label='Cuartil 1' if i == 0 else "")
+
+    ax.scatter(x + 1, medians, color='red', marker='_', s=100, label='Mediana')
+    ax.set_xticks(x + 1) 
+    ax.set_ylabel("Ingresos")
+    ax.set_title("Meses VS Ingresos basado en cuantiles")
+    ax.legend()
+
+    plt.show()
+
+# --------- Inciso M ---------- #
+def month_releases(df):
+    dfm = df[['revenue','releaseDate']]
+    dfm = dfm[dfm['revenue']!=0]
+    dfm['releaseMonth'] = pd.to_datetime(dfm['releaseDate'], errors='coerce').dt.month
+    by_best_movie = dfm.sort_values(by='revenue',ascending=False)
+    by_best_movie = by_best_movie.head(50)
+    month_count = by_best_movie['releaseMonth'].value_counts().sort_index()
+    total_count = dfm['releaseMonth'].value_counts().sort_index()
+    fig, ax= plt.subplots(nrows=1, ncols=2,figsize=(12, 5))
+
+    ax[0].bar(month_count.index, month_count.values)
+    ax[0].set_xlabel("Meses")
+    ax[0].set_ylabel("Frecuencia")
+    ax[0].set_title("Frecuencia de lanzamiento de las 50 Películas Más exitosas por mes")
+    ax[0].set_xticks(np.arange(1, 13))
+    ax[0].set_xticklabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], rotation=45)
+
+    ax[1].bar(total_count.index, total_count.values)
+    ax[1].set_xlabel("Meses")
+    ax[1].set_ylabel("Lanzamientos De Películas")
+    ax[1].set_title("Frecuencia de lanzamiento de Películas por mes")
+    ax[1].set_xticks(np.arange(1, 13))
+    ax[1].set_xticklabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], rotation=45)
+
+
+
+    plt.tight_layout()
+    plt.show()
+
+# --------- Inciso N ---------- #
+
+# --------- Inciso O ---------- #
+
+# --------- Inciso P ---------- #
